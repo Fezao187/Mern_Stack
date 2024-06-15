@@ -14,13 +14,14 @@ app.get("/", (req, res) => {
 
 app.use("/books", booksRoute);
 
-app.use(
-    cors({
-        origin: "http://localhost:3000",
-        method: ["GET", "POST", "PUT", "DELETE"],
-        allowedHeaders: ["Content-Type"]
-    })
-);
+app.use(cors());
+// app.use(
+//     cors({
+//         origin: "http://localhost:3000",
+//         method: ["GET", "POST", "PUT", "DELETE"],
+//         allowedHeaders: ["Content-Type"]
+//     })
+// );
 
 mongoose.connect(mongoDBURL)
     .then(() => {
