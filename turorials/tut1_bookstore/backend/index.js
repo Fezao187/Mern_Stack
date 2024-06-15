@@ -7,6 +7,7 @@ import cors from "cors";
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
     return res.status(234).send("Hello World");
@@ -14,10 +15,9 @@ app.get("/", (req, res) => {
 
 app.use("/books", booksRoute);
 
-app.use(cors());
 // app.use(
 //     cors({
-//         origin: "http://localhost:3000",
+//         origin: "http://localhost:5173",
 //         method: ["GET", "POST", "PUT", "DELETE"],
 //         allowedHeaders: ["Content-Type"]
 //     })
