@@ -12,7 +12,15 @@ app.get("/", (req, res) => {
     return res.status(234).send("Hello World");
 });
 
-app.use("/books",booksRoute);
+app.use("/books", booksRoute);
+
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        method: ["GET", "POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type"]
+    })
+);
 
 mongoose.connect(mongoDBURL)
     .then(() => {
