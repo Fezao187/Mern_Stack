@@ -1,12 +1,39 @@
-const express=require("express");
-const bodyParser=require("body-parser");
+const express = require("express");
+const bodyParser = require("body-parser");
+const {graphqlHTTP} = require("express-graphql");
+const { buildSchema } = require("graphql");
 
-const app=express();
+const app = express();
 
 app.use(bodyParser.json());
 
-app.get("/",(req,res,next)=>{
-res.send("Hello World");
-});
+app.use("/graphql", graphqlHTTP({
+    schema: buildSchema(`
+        type RootQuery{
+            events: [String!]! 
+        }
 
-app.listen(5000);
+        type RootMutation{
+            createEvent(name: String): String
+        }
+
+        schema {
+            query: RootQuery
+            mutation: RootMutation
+        }
+    `),
+    rootValue: {
+        events: () => {
+            return ['Gaming', 'Music', 'Coding']
+        },
+        createEvent: (args) => {
+            const eventName = args.name;
+            return eventName;
+        }
+    },
+    graphiql:true
+}));
+
+app.listen(5000, () => {
+    console.log("Listening on port: 5000");
+});
