@@ -73,16 +73,28 @@ app.use("/graphql", graphqlHTTP({
                 title: args.eventInput.title,
                 description: args.eventInput.description,
                 price: +args.eventInput.price,
-                date: new Date(args.eventInput.date)
+                date: new Date(args.eventInput.date),
+                creator: "6679f79d690a2dc21babb9dc"
             });
+            let createdEvent;
             return event
                 .save()
                 .then(result => {
-                    console.log(result);
-                    return {
+                    createdEvent = {
                         ...result._doc,
                         _id: result._doc._id.toString()
                     };
+                    return User.findById("6679f79d690a2dc21babb9dc")
+                })
+                .then(user => {
+                    if (!user) {
+                        throw new Error("User not found.")
+                    }
+                    user.createdEvents.push(event);
+                    return user.save();
+                })
+                .then(result => {
+                    return createdEvent;
                 })
                 .catch(err => {
                     console.log(err);
@@ -90,8 +102,14 @@ app.use("/graphql", graphqlHTTP({
                 });
         },
         createUser: args => {
-            return bcrypt
-                .hash(args.userInput.password, 12)
+            return User.findOne({ email: args.userInput.email })
+                .then(user => {
+                    if (user) {
+                        throw new Error("User already exists.")
+                    }
+                    return bcrypt
+                        .hash(args.userInput.password, 12)
+                })
                 .then(hashedPass => {
                     const user = new User({
                         email: args.userInput.email,
@@ -100,7 +118,11 @@ app.use("/graphql", graphqlHTTP({
                     return user.save();
                 })
                 .then(result => {
-                    return { ...result._doc, _id: result.id };
+                    return {
+                        ...result._doc,
+                        password: null,
+                        _id: result.id
+                    };
                 })
                 .catch(err => {
                     throw err;
