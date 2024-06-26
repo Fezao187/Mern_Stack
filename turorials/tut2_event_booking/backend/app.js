@@ -11,6 +11,37 @@ const app = express();
 
 app.use(bodyParser.json());
 
+const events = eventIds => {
+    return Event.find({
+        _id: {
+            $in: eventIds
+        }
+    })
+        .then(events => {
+            return events.map(event => {
+                return {
+                    ...event._doc,
+                    _id: event.id,
+                    creator: user.bind(this, event.creator)
+                }
+            })
+        })
+}
+
+const user = userId => {
+    return User.findById(userId)
+        .then(user => {
+            return {
+                ...user._doc,
+                _id: user.id,
+                createdEvents: events.bind(this, user._doc.createdEvents)
+            };
+        })
+        .catch(err => {
+            throw err;
+        })
+}
+
 app.use("/graphql", graphqlHTTP({
     schema: buildSchema(`
         type Event {
@@ -19,12 +50,14 @@ app.use("/graphql", graphqlHTTP({
             description: String!
             price: Float!
             date: String!
+            creator: User!
         }
 
         type User {
             _id: ID!
             email: String!
             password: String
+            createdEvents: [Event!]
         }
 
         input EventInput {
@@ -59,7 +92,8 @@ app.use("/graphql", graphqlHTTP({
                     return events.map(event => {
                         return {
                             ...event._doc,
-                            _id: event.id
+                            _id: event.id,
+                            creator: user.bind(this, event._doc.creator)
                         };
                     });
                 })
@@ -82,7 +116,8 @@ app.use("/graphql", graphqlHTTP({
                 .then(result => {
                     createdEvent = {
                         ...result._doc,
-                        _id: result._doc._id.toString()
+                        _id: result._doc._id.toString(),
+                        creator: user.bind(this, result._doc.creator)
                     };
                     return User.findById("6679f79d690a2dc21babb9dc")
                 })
