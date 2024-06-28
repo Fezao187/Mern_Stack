@@ -3,6 +3,14 @@ const User = require("../../models/user");
 const bcrypt = require("bcryptjs");
 const Booking = require("../../models/booking");
 
+const transEvent=event=>{
+    return{
+        ...event._doc,
+                _id: event.id,
+                date: new Date(event._doc.date).toISOString(),
+                creator: user.bind(this, event.creator)
+    }
+}
 const events = async eventIds => {
     try {
         const events = await Event.find({
@@ -10,15 +18,9 @@ const events = async eventIds => {
                 $in: eventIds
             }
         })
-        events.map(event => {
-            return {
-                ...event._doc,
-                _id: event.id,
-                date: new Date(event._doc.date).toISOString(),
-                creator: user.bind(this, event.creator)
-            }
+        return events.map(event => {
+            return transEvent(event);
         });
-        return events;
     } catch (err) {
         throw err;
     }
