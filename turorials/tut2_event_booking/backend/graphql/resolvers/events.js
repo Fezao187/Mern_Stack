@@ -1,6 +1,7 @@
 const Event = require("../../models/event");
 const { dateToString } = require("../../helpers/date");
 const { transEvent } = require("./merge");
+const User=require("../../models/user");
 
 module.exports = {
     events: async () => {
@@ -22,14 +23,14 @@ module.exports = {
             description: args.eventInput.description,
             price: +args.eventInput.price,
             date: dateToString(args.eventInput.date),
-            creator: "6679f79d690a2dc21babb9dc"
+            creator: req.userId
         });
         let createdEvent;
         try {
             const result = await event
                 .save()
             createdEvent = transEvent(result);
-            const creator = await User.findById("6679f79d690a2dc21babb9dc")
+            const creator = await User.findById(req.userId);
 
             if (!creator) {
                 throw new Error("User not found.")
