@@ -2,6 +2,7 @@ const User = require("../models/UserModels");
 const { createSecretToken } = require("../util/SecretToken");
 const bcrypt = require("bcrypt");
 
+// Signup function
 module.exports.Signup = async (req, res, next) => {
     try {
         // Get all vars from req.body
@@ -28,3 +29,34 @@ module.exports.Signup = async (req, res, next) => {
         console.error(error);
     }
 };
+
+// Login function
+module.exports.Login = async (req, res, next) => {
+    try {
+        // Get email and password from body
+        const { email, password } = req.body;
+        // Check if password and email are filled in
+        if (!email || !password) {
+            return res.json({ message: 'All fields are required' })
+        }
+        // Check if email exists in DB
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.json({ message: 'Incorrect password or email' })
+        }
+        // CHeck id passwords are the same
+        const auth = await bcrypt.compare(password, user.password)
+        if (!auth) {
+            return res.json({ message: 'Incorrect password or email' })
+        }
+        const token = createSecretToken(user._id);
+        res.cookie("token", token, {
+            withCredentials: true,
+            httpOnly: false,
+        });
+        res.status(201).json({ message: "User logged in successfully", success: true });
+        next()
+    } catch (error) {
+        console.error(error);
+    }
+}
