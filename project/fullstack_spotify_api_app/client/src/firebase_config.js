@@ -3,14 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import dotenv from 'dotenv';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-dotenv.config();
+
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: process.env.GOOGLE_API_KEY,
+    apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
     authDomain: "spotify-api-app-4e4c4.firebaseapp.com",
     projectId: "spotify-api-app-4e4c4",
     storageBucket: "spotify-api-app-4e4c4.appspot.com",

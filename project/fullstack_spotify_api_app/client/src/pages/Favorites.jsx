@@ -5,12 +5,11 @@ import "../App.css";
 import { addDoc, collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db, auth } from "../firebase_config";
 import { useNavigate } from "react-router-dom";
-import dotenv from 'dotenv';
 
 function Favorites({ isAuth }) {
-    dotenv.config();
-    const cilentID = process.env.CLIENT_ID;
-    const clientSecret = process.env.CLIENT_SECRET;
+    
+    const cilentID = process.env.REACT_APP_CLIENT_ID;
+    const clientSecret = process.env.REACT_APP_CLIENT_SECRET;
     
     const [searchInput, setSearchInput] = useState("");
     const [accessToken, setAccessToken] = useState("");
