@@ -28,4 +28,4 @@ const albumSchema = new Schema({
     }
 });
 
-export const Album=model("Album",albumSchema);
+export const Album = model("Album", albumSchema);

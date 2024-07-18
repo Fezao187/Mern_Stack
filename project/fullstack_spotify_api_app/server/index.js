@@ -3,10 +3,22 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import { config } from 'dotenv';
 import cookieParser from 'cookie-parser';
+import authRoute from './routes/AuthRoute.js';
 
 config();
 const app = express();
 const { MONGO_URL, PORT } = process.env;
+
+app.use(express.json());
+// Use cors to allow our frontend to access server
+app.use(cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+}))
+
+app.use(cookieParser());
+app.use("/", authRoute);
 
 // Connect to atlas
 mongoose
@@ -20,13 +32,3 @@ mongoose
 app.listen(PORT, () => {
     console.log(`Server is listening on http://localhost:${PORT}`);
 });
-
-// Use cors to allow our frontend to access server
-app.use(cors({
-    origin: ["http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-}))
-
-app.use(cookieParser());
-app.use(express.json());
