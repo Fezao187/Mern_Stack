@@ -1,6 +1,8 @@
+import { Album } from "../models/Album.js";
 import { User } from "../models/User.js";
 import { createSecretToken } from "../util/SecretToken.js";
 import bcrypt from "bcrypt";
+import { checkCurrentUser, userVerification } from "../middleware/AuthMiddleware.js";
 
 // Signup function
 export const Signup = async (req, res, next) => {
@@ -30,6 +32,7 @@ export const Signup = async (req, res, next) => {
     }
 }
 
+// Login function
 export const Login = async (req, res, next) => {
     try {
         // Get all variables from the body
@@ -61,5 +64,32 @@ export const Login = async (req, res, next) => {
         next();
     } catch (error) {
         console.error(error);
+    }
+}
+
+// Create albums
+export const CreateAlbums = async (req, res, next) => {
+    try {
+        if (!req.body.albumName || !req.body.imgUrl || !req.body.artistName || !req.body.releaseDate || !req.body.totalTracks) {
+            return res.status(400).send({
+                message: "Send all required fields"
+            });
+        }
+
+        const newAlbum = {
+            albumName: req.body.albumName,
+            imgUrl: req.body.imgUrl,
+            artistName: req.body.artistName,
+            releaseDate: req.body.releaseDate,
+            totalTracks: req.body.totalTracks,
+            creator: checkCurrentUser.userId
+        }
+
+        const album = await Album.create(newAlbum);
+        res.status(201)
+            .json({ message: "Albums created successfully" })
+        next();
+    } catch (error) {
+        console.log(error.message);
     }
 }
