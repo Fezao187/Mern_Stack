@@ -2,7 +2,6 @@ import { Album } from "../models/Album.js";
 import { User } from "../models/User.js";
 import { createSecretToken } from "../util/SecretToken.js";
 import bcrypt from "bcrypt";
-import { checkCurrentUser, userVerification } from "../middleware/AuthMiddleware.js";
 
 // Signup function
 export const Signup = async (req, res, next) => {
@@ -76,18 +75,41 @@ export const CreateAlbums = async (req, res, next) => {
             });
         }
 
+        const user = req.user;
         const newAlbum = {
             albumName: req.body.albumName,
             imgUrl: req.body.imgUrl,
             artistName: req.body.artistName,
             releaseDate: req.body.releaseDate,
             totalTracks: req.body.totalTracks,
-            creator: checkCurrentUser.userId
+            creator: user._id
         }
 
         const album = await Album.create(newAlbum);
         res.status(201)
             .json({ message: "Albums created successfully" })
+        next();
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+// Get all albums
+export const getAlbums = async (req, res, next) => {
+    try {
+        const albums = await Album.find({});
+        const users = await User.find({});
+        if (users._id == albums.creator) {
+            return res.status(201)
+                .json({
+                    message: "All albums retrived",
+                    data: albums,
+                    users
+                });
+        }else{
+            res.status(500)
+            .send({message:"An error occured"})
+        }
         next();
     } catch (error) {
         console.log(error.message);

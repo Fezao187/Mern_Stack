@@ -20,11 +20,7 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: [true, "Your password is required"],
-    },
-    albums: [{
-        type: Schema.Types.ObjectId,
-        ref: "Album"
-    }]
+    }
 });
 
 // PreAave hook to hash password before saving
