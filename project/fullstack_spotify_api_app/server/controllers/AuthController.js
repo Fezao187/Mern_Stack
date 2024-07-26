@@ -106,12 +106,35 @@ export const getAlbums = async (req, res, next) => {
                     data: albums,
                     users
                 });
-        }else{
+        } else {
             res.status(500)
-            .send({message:"An error occured"})
+                .send({ message: "An error occured" })
         }
         next();
     } catch (error) {
         console.log(error.message);
+    }
+}
+
+// Edit album
+export const editAlbum = async (req, res, next) => {
+    try {
+        if (!req.body.albumName || !req.body.imgUrl || !req.body.artistName || !req.body.releaseDate || !req.body.totalTracks) {
+            return res.status(400).send({
+                message: "Send all required fields"
+            });
+        }
+
+        const { id } = req.params;
+        const result = await Album.findByIdAndUpdate(id, req.body);
+
+        if (!result) {
+            return res.status(404).json({ message: "Album not found" });
+        }
+        next();
+        return res.status(200).json({ message: "Album updated successfully" });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message })
     }
 }
