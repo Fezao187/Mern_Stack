@@ -1,20 +1,30 @@
 import React, { useState } from "react";
-import { auth, provider } from "../firebase_config";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { Button, Form, FloatingLabel,Alert } from "react-bootstrap";
+import { Button, Form, FloatingLabel, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css"
 import "../App.css";
 
 function Login({ setIsAuth }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errMsg, setErrMsg] = useState("")
+    const [errMsg, setErrMsg] = useState("");
+    let navigate = useNavigate();
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            console.log("User logged in successfully");
+            const { data } = await axios.post("http://localhost:5000/login",
+                {
+                    email,
+                    password
+                },
+                {
+                    withCredentials: true
+                }
+            );
+            console.log(data);
+
             localStorage.setItem("isAuth", true);
             setIsAuth(true);
             navigate("/");
@@ -22,15 +32,7 @@ function Login({ setIsAuth }) {
             setErrMsg(error.message);
         }
     }
-    let navigate = useNavigate();
-    const signInWithGoogle = () => {
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                localStorage.setItem("isAuth", true);
-                setIsAuth(true);
-                navigate("/");
-            })
-    }
+
     return (
         <>
             <div className="container1">
@@ -44,13 +46,9 @@ function Login({ setIsAuth }) {
                             <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                         </FloatingLabel>
                         <br />
-                        {errMsg!==""&&<Alert variant="danger" dismissible>{errMsg}</Alert>}
+                        {errMsg !== "" && <Alert variant="danger" dismissible>{errMsg}</Alert>}
                         <Button variant="outline-primary" type="submit" onClick={handleLogin}>
                             Submit
-                        </Button>
-                        <hr />
-                        <Button variant="outline-warning" onClick={signInWithGoogle}>
-                            Sign In with Google
                         </Button>
                     </Form>
                 </div>

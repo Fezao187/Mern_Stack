@@ -7,18 +7,17 @@ import Signup from './pages/Signup';
 import { Button, Container, Nav, Navbar } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { useState } from 'react';
-import { signOut } from 'firebase/auth';
-import { auth } from './firebase_config';
 import AlbumEdit from './pages/AlbumEdit';
+import { useCookies } from "react-cookie";
 
 function App() {
   const [isAuth, setIsAuth] = useState(localStorage.getItem("isAuth"));
-  const signUserOut = () => {
-    signOut(auth).then(() => {
-      localStorage.clear();
-      setIsAuth(false);
-      window.location.pathname = "/login/page";
-    })
+  const [cookies, removeCookie] = useCookies([]);
+  const signUserOut = async () => {
+     removeCookie("token");
+    localStorage.clear();
+    setIsAuth(false);
+    window.location.pathname = "/login/page";
   }
   return (
     <>
@@ -49,8 +48,8 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/login/page' element={<Login setIsAuth={setIsAuth} />} />
           <Route path='/favorites/page' element={<Favorites isAuth={isAuth} />} />
-          <Route path="/signup/page" element={<Signup setIsAuth={setIsAuth} />} />
-          <Route path="/edit/album/:id" element={<AlbumEdit  />} />
+          <Route path="/signup/page" element={<Signup />} />
+          <Route path="/edit/album/:id" element={<AlbumEdit />} />
         </Routes>
       </Router>
     </>

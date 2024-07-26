@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Card, Button, Container } from "react-bootstrap";
-import { collection, getDocs, addDoc, updateDoc, doc } from "firebase/firestore";
-import { db } from "../firebase_config";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 function AlbumEdit() {
@@ -12,17 +11,17 @@ function AlbumEdit() {
     const [totalTracks, setTotalTracks] = useState("");
     const [albumId, setAlbumId] = useState(sessionStorage.getItem("id"));
     let navigate = useNavigate();
-    
+
     const editAlbum = async () => {
-        const albumDoc = doc(db, "albums", albumId);
         const newFields = {
-            name: albumName,
-            image: imgURL,
-            artists: artistName,
-            release_date: releaseDate,
-            total_tracks: totalTracks
+            albumName: albumName,
+            imgUrl: imgURL,
+            artistName: artistName,
+            releaseDate: releaseDate,
+            totalTracks: totalTracks
         };
-        await updateDoc(albumDoc, newFields);
+
+        const editAlb = await axios.put(`http://localhost:5000/${albumId}`, newFields)
         navigate("/favorites/page");
     }
     const cancelBtn = () => {

@@ -1,45 +1,35 @@
-import { createUserWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
+import axios from "axios";
 import React, { useState } from "react";
 import { Button, Form, FloatingLabel, Alert } from "react-bootstrap";
-import { auth, db, provider } from "../firebase_config";
-import { setDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
-function Signup({ setIsAuth }) {
+function Signup() {
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errMsg, setErrMsg] = useState("");
     let navigate = useNavigate();
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            const user = auth.currentUser;
-            await updateProfile(user, {
-                displayName: name
-            });
-            console.log(user);
-            if (user) {
-                await setDoc(doc(db, "Users", user.uid), {
-                    email: user.email,
-                    name: name,
-                });
-            }
+            const { data } = await axios.post("http://localhost:5000/signup",
+                {
+                    name,
+                    email,
+                    username,
+                    password
+                },
+                { withCredentials: true }
+            );
+            console.log(data);
             console.log("Sign up complete");
             navigate("/login/page");
         } catch (error) {
             setErrMsg(error.message);
         }
     }
-    const signInWithGoogle = () => {
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                localStorage.setItem("isAuth", true);
-                setIsAuth(true);
-                navigate("/");
-            });
-    }
+
     return (
         <>
             <div className="container1">
@@ -47,7 +37,10 @@ function Signup({ setIsAuth }) {
                     <Form>
                         <h1>Sign Up</h1>
                         <FloatingLabel controlId="floatingInput" label="Name" className="mb-3">
-                            <Form.Control type="email" placeholder="name@example.com" onChange={(e) => setName(e.target.value)} required />
+                            <Form.Control type="text" placeholder="name@example.com" onChange={(e) => setName(e.target.value)} required />
+                        </FloatingLabel>
+                        <FloatingLabel controlId="floatingInput" label="Username" className="mb-3">
+                            <Form.Control type="text" placeholder="Username" onChange={(e) => setUsername(e.target.value)} required />
                         </FloatingLabel>
                         <FloatingLabel controlId="floatingInput" label="Email address" className="mb-3">
                             <Form.Control type="email" placeholder="name@example.com" onChange={(e) => setEmail(e.target.value)} required />
@@ -59,10 +52,6 @@ function Signup({ setIsAuth }) {
                         {errMsg !== "" && <Alert variant="danger" dismissible>{errMsg}</Alert>}
                         <Button variant="outline-primary" type="submit" onClick={handleSignUp}>
                             Submit
-                        </Button>
-                        <hr />
-                        <Button variant="outline-warning" onClick={signInWithGoogle}>
-                            Sign In with Google
                         </Button>
                     </Form>
                 </div>
