@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { CreateAlbums, editAlbum, getAlbums, Login, Signup } from "../controllers/AuthController.js";
+import { CreateAlbums, deleteAlbum, editAlbum, getAlbums, Login, Signup } from "../controllers/AuthController.js";
 import { userVerification } from "../middleware/AuthMiddleware.js";
 
 const router = Router();
@@ -11,6 +11,6 @@ router.post("/favorites",
 );
 router.get("/", getAlbums);
 router.put("/:id", editAlbum);
-
+router.delete("/:id", deleteAlbum);
 
 export default router;

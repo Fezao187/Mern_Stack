@@ -69,13 +69,16 @@ export const Login = async (req, res, next) => {
 // Create albums
 export const CreateAlbums = async (req, res, next) => {
     try {
+        // Check if all fields are sent
         if (!req.body.albumName || !req.body.imgUrl || !req.body.artistName || !req.body.releaseDate || !req.body.totalTracks) {
             return res.status(400).send({
                 message: "Send all required fields"
             });
         }
 
+        // Get user id from logged in user
         const user = req.user;
+        // Create new object with filled in fields
         const newAlbum = {
             albumName: req.body.albumName,
             imgUrl: req.body.imgUrl,
@@ -85,6 +88,7 @@ export const CreateAlbums = async (req, res, next) => {
             creator: user._id
         }
 
+        // Save albums to DB
         const album = await Album.create(newAlbum);
         res.status(201)
             .json({ message: "Albums created successfully" })
@@ -97,8 +101,10 @@ export const CreateAlbums = async (req, res, next) => {
 // Get all albums
 export const getAlbums = async (req, res, next) => {
     try {
+        // Find all albums and users
         const albums = await Album.find({});
         const users = await User.find({});
+        // Check if users are the same
         if (users._id == albums.creator) {
             return res.status(201)
                 .json({
@@ -119,13 +125,16 @@ export const getAlbums = async (req, res, next) => {
 // Edit album
 export const editAlbum = async (req, res, next) => {
     try {
+        // Check if all fields are filled in
         if (!req.body.albumName || !req.body.imgUrl || !req.body.artistName || !req.body.releaseDate || !req.body.totalTracks) {
             return res.status(400).send({
                 message: "Send all required fields"
             });
         }
 
+        // Get album id from params
         const { id } = req.params;
+        // Update album with ID and all fields from body
         const result = await Album.findByIdAndUpdate(id, req.body);
 
         if (!result) {
@@ -136,5 +145,24 @@ export const editAlbum = async (req, res, next) => {
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ message: error.message })
+    }
+}
+
+// Delete album
+export const deleteAlbum = async (req, res, next) => {
+    try {
+        // Get id from params
+        const { id } = req.params;
+        // Use ID to delete the album
+        const result = await Album.findByIdAndDelete(id);
+
+        if (!result) {
+            return res.status(404).json({ message: "Album not found" });
+        }
+        next();
+        return res.status(200).send({ message: "Album deleted successfully" });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
     }
 }
