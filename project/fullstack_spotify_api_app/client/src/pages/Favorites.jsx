@@ -105,18 +105,27 @@ function Favorites({ isAuth }) {
                                     const albumObj = {
                                         albumName: album.name,
                                         imgUrl: album.images[0].url,
-                                        artists: album.artists[0].name,
+                                        artistName: album.artists[0].name,
                                         releaseDate: album.release_date,
                                         totalTracks: album.total_tracks
                                     }
 
-                                    const saveAlbum = await axios.post("http://localhost:5000/favorites", albumObj);
-                                    const { user } = saveAlbum;
-                                    setUsername(user);
-                                    let albumName = JSON.stringify(album.name);
+                                    const { data } = await axios.post("http://localhost:5000/favorites",
+                                        albumObj,
+                                        { withCredentials: true }
+                                    );
+                                    const {status,message}=data;
+                                    if(status){
+                                        console.log(data);
+                                        setUsername("Fezao187");
+                                        let albumName = JSON.stringify(album.name);
                                     alert("Successfully added " + albumName);
+                                    }else{
+                                        console.log(data);
+                                        alert(message);
+                                    }
                                 } catch (error) {
-                                    alert(console.log(error));
+                                    alert(error);
                                 }
                             }
                             return (

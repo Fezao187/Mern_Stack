@@ -21,7 +21,7 @@ function Home() {
                     (
                         albumsList.map((album) => {
                             return (
-                                <Card>
+                                <Card key={album._id}>
                                     <div className="img-size">
                                         <Card.Img fluid src={album.imgUrl} />
                                     </div>

@@ -22,9 +22,14 @@ function Signup() {
                 },
                 { withCredentials: true }
             );
-            console.log(data);
-            console.log("Sign up complete");
-            navigate("/login/page");
+            const { success, message } = data;
+            if (success) {
+                console.log(data);
+                console.log("Sign up complete");
+                navigate("/login/page");
+            } else {
+                setErrMsg(message);
+            }
         } catch (error) {
             setErrMsg(error.message);
         }

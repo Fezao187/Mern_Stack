@@ -14,7 +14,7 @@ function App() {
   const [isAuth, setIsAuth] = useState(localStorage.getItem("isAuth"));
   const [cookies, removeCookie] = useCookies([]);
   const signUserOut = async () => {
-     removeCookie("token");
+    removeCookie("token");
     localStorage.clear();
     setIsAuth(false);
     window.location.pathname = "/login/page";

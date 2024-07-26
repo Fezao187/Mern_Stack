@@ -24,10 +24,16 @@ function Login({ setIsAuth }) {
                 }
             );
             console.log(data);
+            const { success, message } = data;
+            if (success) {
+                localStorage.setItem("isAuth", true);
+                setIsAuth(true);
+                navigate("/");
+                console.log(message);
+            } else {
+                console.log(message);
+            }
 
-            localStorage.setItem("isAuth", true);
-            setIsAuth(true);
-            navigate("/");
         } catch (error) {
             setErrMsg(error.message);
         }
