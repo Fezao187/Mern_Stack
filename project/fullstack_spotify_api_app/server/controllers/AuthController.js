@@ -85,6 +85,7 @@ export const CreateAlbums = async (req, res, next) => {
             artistName: req.body.artistName,
             releaseDate: req.body.releaseDate,
             totalTracks: req.body.totalTracks,
+            username: user.username,
             creator: user._id
         }
 
@@ -103,19 +104,11 @@ export const getAlbums = async (req, res, next) => {
     try {
         // Find all albums and users
         const albums = await Album.find({});
-        const users = await User.find({});
-        // Check if users are the same
-        if (users._id == albums.creator) {
-            return res.status(201)
-                .json({
-                    message: "All albums retrived",
-                    data: albums,
-                    users
-                });
-        } else {
-            res.status(500)
-                .send({ message: "An error occured" })
-        }
+        res.status(201)
+            .json({
+                message: "All albums retrived",
+                data: albums
+            });
         next();
     } catch (error) {
         console.log(error.message);

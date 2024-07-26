@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Container, Card, Row, Spinner } from "react-bootstrap";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase_config";
+import axios from "axios";
 
 function Home() {
     const [albumsList, setAlbumsList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const albumsCollectionRef = collection(db, "albums");
     useEffect(() => {
         const getDbAlbums = async () => {
-            const data = await getDocs(albumsCollectionRef);
+            const data = await axios.get("http://localhost:5000/")
+            setAlbumsList(data.data.data);
             setIsLoading(false);
-            setAlbumsList(data.docs.map((doc) => ({
-                ...doc.data(),
-                id: doc.id
-            })));
         };
         getDbAlbums();
         console.log("UseEffect ran");
@@ -28,16 +23,16 @@ function Home() {
                             return (
                                 <Card>
                                     <div className="img-size">
-                                        <Card.Img fluid src={album.image} />
+                                        <Card.Img fluid src={album.imgUrl} />
                                     </div>
                                     <Card.Body>
-                                        <Card.Title>{album.name}</Card.Title>
+                                        <Card.Title>{album.albumName}</Card.Title>
                                         <Card.Text>
-                                            <p><strong>Artist</strong>: {album.artists}</p>
-                                            <p><strong>Release Date</strong>: {album.release_date}</p>
-                                            <p><strong>Total Tracks</strong>: {album.total_tracks}</p>
+                                            <p><strong>Artist</strong>: {album.artistName}</p>
+                                            <p><strong>Release Date</strong>: {album.releaseDate}</p>
+                                            <p><strong>Total Tracks</strong>: {album.totalTracks}</p>
                                             <hr />
-                                            <p>Posted by <strong>{album.author.name}</strong></p>
+                                            <p>Posted by <strong>{album.username}</strong></p>
                                         </Card.Text>
                                     </Card.Body>
                                 </Card>

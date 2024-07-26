@@ -22,6 +22,9 @@ const albumSchema = new Schema({
         type: String,
         required: [true, "Total number of is required"]
     },
+    username: {
+        type: String
+    },
     creator: {
         type: Schema.Types.ObjectId,
         ref: "User"
