@@ -29,7 +29,7 @@ export const Signup = async (req, res, next) => {
             httpOnly: false,
         });
         res.status(201)
-            .json({ message: "User signed up successfully", success: true, user,token });
+            .json({ message: "User signed up successfully", success: true, user, token });
         next();
     } catch (error) {
         console.log(error);
@@ -119,6 +119,21 @@ export const getAlbums = async (req, res, next) => {
         next();
     } catch (error) {
         console.log(error.message);
+    }
+}
+
+// Get user albums
+export const getUserAlbums = async (req, res, next) => {
+    try {
+        const albums = await Album.find({ creator: req.user.id });
+        res.status(200)
+            .json({
+                message: "Retrieved all my albums",
+                albums
+            });
+        next();
+    } catch (error) {
+        console.log(error);
     }
 }
 
