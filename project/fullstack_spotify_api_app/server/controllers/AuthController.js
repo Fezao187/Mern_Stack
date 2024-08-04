@@ -8,6 +8,11 @@ export const Signup = async (req, res, next) => {
     try {
         // Get all variables from the body
         const { name, email, username, password } = req.body;
+        // Check all fields
+        if (!name || !email || !username || !password) {
+            return res.json({ message: "All fields are required" })
+        }
+        // check if user exists
         const checkEmail = await User.findOne({ email });
         const checkUsername = await User.findOne({ username });
         // Check if user exists by checking email and username
@@ -24,7 +29,7 @@ export const Signup = async (req, res, next) => {
             httpOnly: false,
         });
         res.status(201)
-            .json({ message: "User signed up successfully", success: true, user });
+            .json({ message: "User signed up successfully", success: true, user,token });
         next();
     } catch (error) {
         console.log(error);
@@ -43,12 +48,12 @@ export const Login = async (req, res, next) => {
         // Check if email exists in DB
         const user = await User.findOne({ email });
         if (!user) {
-            return res.json({ message: "Incorrect password or email" })
+            return res.json({ message: "Email is incorrect" })
         }
         // Check if req.body is the same password as the on in DB
         const auth = await bcrypt.compare(password, user.password);
         if (!auth) {
-            return res.json({ message: "Password or email is incorrect" })
+            return res.json({ message: "Password is incorrect" })
         }
         const token = createSecretToken(user._id);
         res.cookie("token", token, {
@@ -58,7 +63,9 @@ export const Login = async (req, res, next) => {
         res.status(201)
             .json({
                 message: "User logged in successfully",
-                success: true
+                success: true,
+                user,
+                token
             });
         next();
     } catch (error) {
