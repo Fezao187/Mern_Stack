@@ -38,8 +38,9 @@ const Login = () => {
                 { withCredentials: true }
             );
             console.log(data);
-            const { success, message } = data;
+            const { success, message,token } = data;
             if (success) {
+                sessionStorage.setItem("token",token);
                 handleSuccess(message);
                 setTimeout(() => {
                     navigate("/");

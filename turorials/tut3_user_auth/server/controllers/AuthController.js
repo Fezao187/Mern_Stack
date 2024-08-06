@@ -5,57 +5,68 @@ const bcrypt = require("bcrypt");
 // Signup function
 module.exports.Signup = async (req, res, next) => {
     try {
-        // Get all vars from req.body
-        const { email, password, username, createdAt } = req.body;
-        const existingUser = await User.findOne({ email });
-        // Check for existing user
-        if (existingUser) {
+        // Get all variables from the body
+        const {email, username, password } = req.body;
+        // Check all fields
+        if (!email || !username || !password) {
+            return res.json({ message: "All fields are required" })
+        }
+        // check if user exists
+        const checkEmail = await User.findOne({ email });
+        const checkUsername = await User.findOne({ username });
+        // Check if user exists by checking email and username
+        if (checkEmail || checkUsername) {
             return res.json({ message: "User already exists" });
         }
-        // If there is no user, then create user
-        const user = await User.create({ email, password, username, createdAt });
-        // Generate token using ID
+        // If user does not exist, then create user
+        const user = await User.create({ email, username, password });
+        // Generate token using id
         const token = createSecretToken(user._id);
         // Send cookie with key of 'token' and value of token
         res.cookie("token", token, {
             withCredentials: true,
             httpOnly: false,
         });
-        res
-            .status(201)
-            .json({ message: "User signed in successfully", success: true, user });
+        res.status(201)
+            .json({ message: "User signed up successfully", success: true, user, token });
         next();
     } catch (error) {
-        console.error(error);
+        console.log(error);
     }
 };
 
 // Login function
 module.exports.Login = async (req, res, next) => {
     try {
-        // Get email and password from body
+        // Get all variables from the body
         const { email, password } = req.body;
-        // Check if password and email are filled in
+        // Check if email exists on DB
         if (!email || !password) {
-            return res.json({ message: 'All fields are required' })
+            return res.json({ message: "All fields are required" })
         }
         // Check if email exists in DB
         const user = await User.findOne({ email });
         if (!user) {
-            return res.json({ message: 'Incorrect password or email' })
+            return res.json({ message: "Email is incorrect" })
         }
-        // CHeck id passwords are the same
-        const auth = await bcrypt.compare(password, user.password)
+        // Check if req.body is the same password as the on in DB
+        const auth = await bcrypt.compare(password, user.password);
         if (!auth) {
-            return res.json({ message: 'Incorrect password or email' })
+            return res.json({ message: "Password is incorrect" })
         }
         const token = createSecretToken(user._id);
         res.cookie("token", token, {
             withCredentials: true,
             httpOnly: false,
         });
-        res.status(201).json({ message: "User logged in successfully", success: true });
-        next()
+        res.status(201)
+            .json({
+                message: "User logged in successfully",
+                success: true,
+                user,
+                token
+            });
+        next();
     } catch (error) {
         console.error(error);
     }

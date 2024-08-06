@@ -8,14 +8,19 @@ const Home = () => {
     const navigate = useNavigate();
     const [cookies, removeCookie] = useCookies([]);
     const [username, setUsername] = useState("");
+    let token = sessionStorage.getItem("token");
     useEffect(() => {
         const verifyCookie = async () => {
-            if (!cookies.token) {
-                navigate("/login");
-            }
+            
             const { data } = await axios.post(
                 "http://localhost:4000",
-                {},
+                {
+                    headers: {
+                        'authorization': `Bearer ${token}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                },
                 { withCredentials: true }
             );
             const { status, user } = data;
@@ -24,12 +29,11 @@ const Home = () => {
                 ? toast(`Hello ${user}`, {
                     position: "top-right",
                 })
-                : (removeCookie("token"), navigate("/login"));
+                :  navigate("/login");
         };
-        verifyCookie();
-    }, [cookies, navigate, removeCookie]);
+    }, []);
     const Logout = () => {
-        removeCookie("token");
+        sessionStorage.clear();
         navigate("/signup");
     };
     return (
