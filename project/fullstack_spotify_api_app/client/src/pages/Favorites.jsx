@@ -16,6 +16,7 @@ function Favorites({ isAuth }) {
     const [albumsList, setAlbumsList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [username, setUsername] = useState("");
+    const [token, setToken] = useState(sessionStorage.getItem("token"));
 
     let navigate = useNavigate();
 
@@ -55,15 +56,28 @@ function Favorites({ isAuth }) {
     }
     useEffect(() => {
         const getDbAlbums = async () => {
-            const data = await axios.get("http://localhost:5000/")
-            setAlbumsList(data.data.data);
+            const data = await axios.get("http://localhost:5000/myAlbums", {
+                headers: {
+                    'authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log(data.data.albums);
+            setAlbumsList(data.data.albums);
             setIsLoading(false);
         };
         getDbAlbums();
         console.log("useEffect ran")
     }, []);
     const deleteDbAlbum = async (id) => {
-        const deleteAlbum = await axios.delete(`http://localhost:5000/${id}`);
+        const deleteAlbum = await axios.delete(`http://localhost:5000/${id}`, {
+            headers: {
+                'authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
         window.location.reload();
     }
 
@@ -112,15 +126,21 @@ function Favorites({ isAuth }) {
 
                                     const { data } = await axios.post("http://localhost:5000/favorites",
                                         albumObj,
-                                        { withCredentials: true }
+                                        {
+                                            headers: {
+                                                'authorization': `Bearer ${token}`,
+                                                'Accept': 'application/json',
+                                                'Content-Type': 'application/json'
+                                            }
+                                        }
                                     );
-                                    const {status,message}=data;
-                                    if(status){
+                                    const { status, message } = data;
+                                    if (status) {
                                         console.log(data);
                                         setUsername("Fezao187");
                                         let albumName = JSON.stringify(album.name);
-                                    alert("Successfully added " + albumName);
-                                    }else{
+                                        alert("Successfully added " + albumName);
+                                    } else {
                                         console.log(data);
                                         alert(message);
                                     }
@@ -158,7 +178,7 @@ function Favorites({ isAuth }) {
                         {isLoading == true ? (<div className="loading"><div><Spinner animation="grow" /></div></div>) :
                             (
                                 albumsList.map((album) => {
-                                    if (isAuth && album.username === username) {
+                                    if (album) {
                                         return (
                                             <Card>
                                                 <div className="img-size">
@@ -176,6 +196,8 @@ function Favorites({ isAuth }) {
                                                 <Button variant="danger" onClick={event => deleteDbAlbum(album._id)}>Remove</Button>
                                             </Card>
                                         )
+                                    } else {
+                                        <h1>Nothing to display</h1>
                                     }
                                 })
                             )}

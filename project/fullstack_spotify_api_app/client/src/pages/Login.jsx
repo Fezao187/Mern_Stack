@@ -24,14 +24,16 @@ function Login({ setIsAuth }) {
                 }
             );
             console.log(data);
-            const { success, message } = data;
+            const { success, message, token } = data;
             if (success) {
+                sessionStorage.setItem("token",token);
                 localStorage.setItem("isAuth", true);
                 setIsAuth(true);
                 navigate("/");
+                console.log(token);
                 console.log(message);
             } else {
-                console.log(message);
+                setErrMsg(message);
             }
 
         } catch (error) {
@@ -39,6 +41,7 @@ function Login({ setIsAuth }) {
         }
     }
 
+    
     return (
         <>
             <div className="container1">

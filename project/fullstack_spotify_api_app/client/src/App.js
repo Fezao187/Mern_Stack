@@ -8,13 +8,11 @@ import { Button, Container, Nav, Navbar } from 'react-bootstrap';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { useState } from 'react';
 import AlbumEdit from './pages/AlbumEdit';
-import { useCookies } from "react-cookie";
 
 function App() {
   const [isAuth, setIsAuth] = useState(localStorage.getItem("isAuth"));
-  const [cookies, removeCookie] = useCookies([]);
   const signUserOut = async () => {
-    removeCookie("token");
+    sessionStorage.clear();
     localStorage.clear();
     setIsAuth(false);
     window.location.pathname = "/login/page";

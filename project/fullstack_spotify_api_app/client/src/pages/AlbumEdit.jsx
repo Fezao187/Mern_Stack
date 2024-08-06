@@ -10,6 +10,7 @@ function AlbumEdit() {
     const [releaseDate, setReleaseDate] = useState("");
     const [totalTracks, setTotalTracks] = useState("");
     const [albumId, setAlbumId] = useState(sessionStorage.getItem("id"));
+    const [token, setToken] = useState(sessionStorage.getItem("token"));
     let navigate = useNavigate();
 
     const editAlbum = async () => {
@@ -21,7 +22,13 @@ function AlbumEdit() {
             totalTracks: totalTracks
         };
 
-        const editAlb = await axios.put(`http://localhost:5000/${albumId}`, newFields)
+        const editAlb = await axios.put(`http://localhost:5000/${albumId}`, newFields,{
+            headers: {
+                'authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
         navigate("/favorites/page");
     }
     const cancelBtn = () => {
