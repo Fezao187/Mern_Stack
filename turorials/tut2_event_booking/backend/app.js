@@ -5,8 +5,11 @@ const mongoose = require("mongoose");
 const graphiqlSchema = require("./graphql/schema/index");
 const graphiqlResolvers = require("./graphql/resolvers/index");
 const isAuth=require("./middleware/isAuth");
+const dotenv=require("dotenv");
 
 const app = express();
+
+dotenv.config();
 
 app.use(bodyParser.json());
 
