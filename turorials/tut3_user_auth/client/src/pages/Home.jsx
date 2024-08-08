@@ -11,7 +11,9 @@ const Home = () => {
     let token = sessionStorage.getItem("token");
     useEffect(() => {
         const verifyCookie = async () => {
-            
+            if (!token) {
+                navigate("/login");
+            }
             const { data } = await axios.post(
                 "http://localhost:4000",
                 {
@@ -29,8 +31,9 @@ const Home = () => {
                 ? toast(`Hello ${user}`, {
                     position: "top-right",
                 })
-                :  navigate("/login");
+                : navigate("/login");
         };
+        verifyCookie();
     }, []);
     const Logout = () => {
         sessionStorage.clear();
