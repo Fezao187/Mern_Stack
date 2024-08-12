@@ -38,9 +38,9 @@ const Login = () => {
                 { withCredentials: true }
             );
             console.log(data);
-            const { success, message,token } = data;
+            const { success, message, token } = data;
             if (success) {
-                sessionStorage.setItem("token",token);
+                sessionStorage.setItem("token", token);
                 handleSuccess(message);
                 setTimeout(() => {
                     navigate("/");
@@ -60,7 +60,7 @@ const Login = () => {
 
     return (
         <div className="form_container">
-            <h2>Login Account</h2>
+            <h2>Login into Account</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="email">Email</label>

@@ -41,7 +41,7 @@ export const Login = async (req, res, next) => {
     try {
         // Get all variables from the body
         const { email, password } = req.body;
-        // Check if email exists on DB
+        // Check if all fields are sent
         if (!email || !password) {
             return res.json({ message: "All fields are required" })
         }

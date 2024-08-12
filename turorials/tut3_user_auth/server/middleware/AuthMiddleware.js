@@ -14,6 +14,8 @@ module.exports.userVerification = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.TOKEN_KEY)
             // Get user from token
             req.user = await User.findById(decoded.id).select("-password");
+            res.status(200)
+                .json({ message: "Authorized" })
             next();
         } catch (error) {
             console.log(error);

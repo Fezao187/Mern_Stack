@@ -6,7 +6,6 @@ import { ToastContainer, toast } from "react-toastify";
 
 const Home = () => {
     const navigate = useNavigate();
-    const [cookies, removeCookie] = useCookies([]);
     const [username, setUsername] = useState("");
     let token = sessionStorage.getItem("token");
     useEffect(() => {
