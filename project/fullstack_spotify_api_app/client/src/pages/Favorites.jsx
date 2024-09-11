@@ -56,7 +56,7 @@ function Favorites({ isAuth }) {
     }
     useEffect(() => {
         const getDbAlbums = async () => {
-            const data = await axios.get("http://localhost:5000/myAlbums", {
+            const data = await axios.get("https://mern-stack-2w7i.onrender.com/myAlbums", {
                 headers: {
                     'authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
@@ -71,7 +71,7 @@ function Favorites({ isAuth }) {
         console.log("useEffect ran")
     }, []);
     const deleteDbAlbum = async (id) => {
-        const deleteAlbum = await axios.delete(`http://localhost:5000/${id}`, {
+        const deleteAlbum = await axios.delete(`https://mern-stack-2w7i.onrender.com/${id}`, {
             headers: {
                 'authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
@@ -124,7 +124,7 @@ function Favorites({ isAuth }) {
                                         totalTracks: album.total_tracks
                                     }
 
-                                    const { data } = await axios.post("http://localhost:5000/favorites",
+                                    const { data } = await axios.post("https://mern-stack-2w7i.onrender.com/favorites",
                                         albumObj,
                                         {
                                             headers: {

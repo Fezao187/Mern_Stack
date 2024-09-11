@@ -14,7 +14,7 @@ function Login({ setIsAuth }) {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post("http://localhost:5000/login",
+            const { data } = await axios.post("https://mern-stack-2w7i.onrender.com/login",
                 {
                     email,
                     password

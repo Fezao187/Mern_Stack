@@ -22,7 +22,7 @@ function AlbumEdit() {
             totalTracks: totalTracks
         };
 
-        const editAlb = await axios.put(`http://localhost:5000/${albumId}`, newFields,{
+        const editAlb = await axios.put(`https://mern-stack-2w7i.onrender.com/${albumId}`, newFields,{
             headers: {
                 'authorization': `Bearer ${token}`,
                 'Accept': 'application/json',

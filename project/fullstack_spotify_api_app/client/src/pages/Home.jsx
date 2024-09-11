@@ -7,7 +7,7 @@ function Home() {
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         const getDbAlbums = async () => {
-            const data = await axios.get("http://localhost:5000/")
+            const data = await axios.get("https://mern-stack-2w7i.onrender.com/")
             setAlbumsList(data.data.data);
             setIsLoading(false);
         };

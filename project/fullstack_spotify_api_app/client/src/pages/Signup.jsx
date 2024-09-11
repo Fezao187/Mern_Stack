@@ -13,7 +13,7 @@ function Signup() {
     const handleSignUp = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.post("http://localhost:5000/signup",
+            const { data } = await axios.post("https://mern-stack-2w7i.onrender.com/signup",
                 {
                     name,
                     email,
