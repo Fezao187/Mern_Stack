@@ -13,6 +13,7 @@ app.use(express.json());
 // Use cors to allow our frontend to access server
 app.use(cors({
     origin: ["https://mern-stack-1-im19.onrender.com/"],
+    allowedHeaders: ["Access-Control-Allow-Origin"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }))
