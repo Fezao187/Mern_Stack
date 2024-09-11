@@ -12,7 +12,7 @@ const { MONGO_URL, PORT } = process.env;
 app.use(express.json());
 // Use cors to allow our frontend to access server
 app.use(cors({
-    origin: ["http://localhost:3000"],
+    origin: ["https://mern-stack-1-im19.onrender.com/"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }))
